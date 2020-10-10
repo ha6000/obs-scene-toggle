@@ -28,7 +28,7 @@ press the hotkey to switch from the last scene and this scene
 > on startup it wont be able to know what is last scene so it wont toggle.
 
 ## Todo
-* Update hotkeys when scene's change
+* Update hotkeys when scenes change
 
 ## License
 **MIT © 2020 Harry Kruger**
