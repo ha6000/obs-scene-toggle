@@ -20,11 +20,12 @@ You can then add it to scripts using `Tools -> Scripts -> +`
 ## Usage
 
 Add a hotkey for toggling in `Settings -> Hotkeys -> Toggle 'Scene Name'`
-_note: make sure you disable other switch to hotkeys to avoid issue's_
 
 press the hotkey to switch from the last scene and this scene
 
-_note: on startup it wont be able to know what is last scene so it wont toggle_
+**Note:**
+> Make sure you disable other switch to hotkeys to avoid issue's and
+> on startup it wont be able to know what is last scene so it wont toggle.
 
 ## License
 **MIT © 2020 Harry Kruger**
