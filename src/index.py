@@ -33,6 +33,8 @@ def _handle_key(toggle_scene, toggle_scene_id):
 		
 	return _on_press
 
+loaded = False
+
 def on_event(event):
 	if event == obs.OBS_FRONTEND_EVENT_SCENE_CHANGED:
 		global last_switched_scene
@@ -54,15 +56,19 @@ def on_event(event):
 			last_scene_id = scene_id
 		else:
 			obs.obs_source_release(scene)
+	elif event == obs.OBS_FRONTEND_EVENT_FINISHED_LOADING or event == obs.OBS_FRONTEND_EVENT_SCENE_LIST_CHANGED:
+		global loaded
+		if not loaded:
+			loaded = True
+			_register_hot_keys(settngs)
+
+
 
 hot_keys = []
-scenes = []
 
 def _register_hot_keys(settings):
-	global scenes
 
 	scenes = obs.obs_frontend_get_scenes()
-	print(scenes)
 	for scene in scenes:
 		scene_id = obs.obs_source_get_name(scene)
 		callback = _handle_key(scene, scene_id)
@@ -74,10 +80,19 @@ def _register_hot_keys(settings):
 		obs.obs_data_array_release(save_array)
 		hot_keys.append({'callback': proxy_callback, 'scene_id': hot_key_id, 'name': name})
 
+settngs = None
+
 def script_load(settings):
+	global settngs
+	settngs = settings
 	print('toggle script loaded')
+	scenes = obs.obs_frontend_get_scenes()
+	if len(scenes) > 0:
+		global loaded
+		loaded = True
+		_register_hot_keys(settings)
+	obs.source_list_release(scenes)
 	obs.obs_frontend_add_event_callback(on_event)
-	_register_hot_keys(settings)
 
 def script_unload():
 	obs.obs_frontend_remove_event_callback(on_event)
