@@ -19,7 +19,7 @@ You can then add it to scripts using `Tools -> Scripts -> +`
 
 ## Usage
 
-Add a hotkey for toggeling in `Settings -> Hotkeys -> Toggle 'Scene Name'`
+Add a hotkey for toggling in `Settings -> Hotkeys -> Toggle 'Scene Name'`
 _note: make sure you disable other switch to hotkeys to avoid issue's_
 
 press the hotkey to switch from the last scene and this scene
