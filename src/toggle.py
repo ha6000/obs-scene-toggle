@@ -1,10 +1,6 @@
 import obspython as obs
 
 last_switched_scene=None
-last_switched_scene_id=None
-
-last_scene=None
-last_scene_id=None
 
 def set_current_scene(scene):
 	obs.obs_frontend_remove_event_callback(on_event)
@@ -12,54 +8,34 @@ def set_current_scene(scene):
 	obs.obs_frontend_add_event_callback(on_event)
 
 def _handle_key(toggle_scene, toggle_scene_id):
+	print(toggle_scene)
 	def _on_press(pressed):
+		print(toggle_scene)
 		if pressed: return
-
 		global last_switched_scene
-		global last_switched_scene_id
-
-		global last_scene
-		global last_scene_id
 
 		scene = obs.obs_frontend_get_current_scene()
 		scene_id = obs.obs_source_get_name(scene)
 
-		if scene_id == toggle_scene_id and last_switched_scene != None:
-			set_current_scene(last_switched_scene)
+		if scene_id == toggle_scene_id:
+			obs.obs_source_release(scene)
+			if last_switched_scene != None: set_current_scene(last_switched_scene)
 		else:
-			set_current_scene(obs.obs_get_source_by_name(toggle_scene_id))
+			if last_switched_scene != None: obs.obs_source_release(last_switched_scene)
+			last_switched_scene = scene
+			set_current_scene(toggle_scene)
 
-		obs.obs_source_release(scene)
-		
 	return _on_press
+
 
 loaded = False
 
 def on_event(event):
-	if event == obs.OBS_FRONTEND_EVENT_SCENE_CHANGED:
-		global last_switched_scene
-		global last_switched_scene_id
-
-		global last_scene
-		global last_scene_id
-
-		scene = obs.obs_frontend_get_current_scene()
-		scene_id = obs.obs_source_get_name(scene)
-		if scene_id != last_scene_id:
-			if last_switched_scene != None:
-				obs.obs_source_release(last_switched_scene)
-
-			last_switched_scene = last_scene
-			last_switched_scene_id = last_scene_id
-
-			last_scene = scene
-			last_scene_id = scene_id
-		else:
-			obs.obs_source_release(scene)
-	elif event == obs.OBS_FRONTEND_EVENT_FINISHED_LOADING or event == obs.OBS_FRONTEND_EVENT_SCENE_LIST_CHANGED:
+	if event == obs.OBS_FRONTEND_EVENT_FINISHED_LOADING or event == obs.OBS_FRONTEND_EVENT_SCENE_LIST_CHANGED:
 		global loaded
 		if not loaded:
 			loaded = True
+			print(settngs)
 			_register_hot_keys(settngs)
 
 
@@ -73,6 +49,7 @@ def _register_hot_keys(settings):
 		scene_id = obs.obs_source_get_name(scene)
 		callback = _handle_key(scene, scene_id)
 		proxy_callback = lambda pressed: callback(pressed)
+		proxy_callback.__name__ = scene_id
 		name = 'toggle.' + scene_id
 		hot_key_id = obs.obs_hotkey_register_frontend(name, "Toggle '" + scene_id + "'", proxy_callback)
 		save_array = obs.obs_data_get_array(settings, name)
