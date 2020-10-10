@@ -12,7 +12,7 @@ $ git clone https://github.com/ha6000/obs-scene-toggle.git
 To add script to scripts folder run the install script.
 
 ```
-sudo ./install.sh
+$ sudo ./install.sh
 ```
 
 You can then add it to scripts using `Tools -> Scripts -> +`
