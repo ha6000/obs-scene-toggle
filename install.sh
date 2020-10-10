@@ -1,0 +1,1 @@
+cp ./src/toggle.py /usr/share/obs/obs-plugins/frontend-tools/scripts/toggle.py

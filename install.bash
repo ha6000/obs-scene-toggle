@@ -1,0 +1,1 @@
+copy .\\src\\toggle.py %appdata%\obs-studio\\obs-plugins\\frontend-tools\\scripts\\toggle.py
