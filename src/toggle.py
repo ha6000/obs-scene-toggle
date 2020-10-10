@@ -8,9 +8,7 @@ def set_current_scene(scene):
 	obs.obs_frontend_add_event_callback(on_event)
 
 def _handle_key(toggle_scene, toggle_scene_id):
-	print(toggle_scene)
 	def _on_press(pressed):
-		print(toggle_scene)
 		if pressed: return
 		global last_switched_scene
 
@@ -19,9 +17,9 @@ def _handle_key(toggle_scene, toggle_scene_id):
 
 		if scene_id == toggle_scene_id:
 			obs.obs_source_release(scene)
-			if last_switched_scene != None: set_current_scene(last_switched_scene)
+			if last_switched_scene: set_current_scene(last_switched_scene)
 		else:
-			if last_switched_scene != None: obs.obs_source_release(last_switched_scene)
+			if last_switched_scene: obs.obs_source_release(last_switched_scene)
 			last_switched_scene = scene
 			set_current_scene(toggle_scene)
 
@@ -35,27 +33,27 @@ def on_event(event):
 		global loaded
 		if not loaded:
 			loaded = True
-			print(settngs)
 			_register_hot_keys(settngs)
 
 
 
 hot_keys = []
+scenes = []
 
 def _register_hot_keys(settings):
+	global scenes
 
 	scenes = obs.obs_frontend_get_scenes()
-	for scene in scenes:
+	for i in range(len(scenes)):
+		scene = scenes[i]
 		scene_id = obs.obs_source_get_name(scene)
 		callback = _handle_key(scene, scene_id)
-		proxy_callback = lambda pressed: callback(pressed)
-		proxy_callback.__name__ = scene_id
 		name = 'toggle.' + scene_id
-		hot_key_id = obs.obs_hotkey_register_frontend(name, "Toggle '" + scene_id + "'", proxy_callback)
+		hot_key_id = obs.obs_hotkey_register_frontend(name, "Toggle '" + scene_id + "'", callback)
 		save_array = obs.obs_data_get_array(settings, name)
 		obs.obs_hotkey_load(hot_key_id, save_array)
 		obs.obs_data_array_release(save_array)
-		hot_keys.append({'callback': proxy_callback, 'scene_id': hot_key_id, 'name': name})
+		hot_keys.append({'callback': callback, 'scene_id': hot_key_id, 'name': name})
 
 settngs = None
 
