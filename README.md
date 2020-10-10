@@ -3,7 +3,7 @@
 
 ## Installation
 
-You can use download zip or git.
+You can use `download zip` or git.
 
 ```
 $ git clone https://github.com/ha6000/obs-scene-toggle.git
