@@ -1,7 +1,8 @@
+# TODO: Add more comments
 import obspython as obs
 
 last_switched_scene=None
-
+# Hack to fix studio bug and crash when having event callback
 def set_current_scene(scene):
 	obs.obs_frontend_remove_event_callback(on_event)
 	if obs.obs_frontend_preview_program_mode_active():
@@ -10,6 +11,7 @@ def set_current_scene(scene):
 		obs.obs_frontend_set_current_scene(scene)
 	obs.obs_frontend_add_event_callback(on_event)
 
+# Creates key press callback
 def _handle_key(toggle_scene, toggle_scene_id):
 	def _on_press(pressed):
 		if pressed: return
