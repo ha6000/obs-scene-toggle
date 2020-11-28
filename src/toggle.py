@@ -4,7 +4,10 @@ last_switched_scene=None
 
 def set_current_scene(scene):
 	obs.obs_frontend_remove_event_callback(on_event)
-	obs.obs_frontend_set_current_scene(scene)
+	if obs.obs_frontend_preview_program_mode_active():
+		obs.obs_frontend_set_current_preview_scene(scene)
+	else:
+		obs.obs_frontend_set_current_scene(scene)
 	obs.obs_frontend_add_event_callback(on_event)
 
 def _handle_key(toggle_scene, toggle_scene_id):
@@ -12,7 +15,7 @@ def _handle_key(toggle_scene, toggle_scene_id):
 		if pressed: return
 		global last_switched_scene
 
-		scene = obs.obs_frontend_get_current_scene()
+		scene = obs.obs_frontend_get_current_preview_scene()
 		scene_id = obs.obs_source_get_name(scene)
 
 		if scene_id == toggle_scene_id:
